@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Cash Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+    <style>
+      .area-title { color: #d00; font-weight: bold; letter-spacing: 1px; }
+      .area-border { border: 2px solid #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #fff; }
+      .service-btn { border: 2px solid #d00; color: #d00; border-radius: 20px; background: #fff; }
+      .pay-btn { border: 2px solid #800080; color: #800080; border-radius: 20px; background: #fff; }
+      .cash-btn { border: 2px solid #000; color: #000; border-radius: 20px; background: #fff; }
+      .danger-btn { border: 2px solid #d00; color: #d00; border-radius: 20px; background: #fff; }
+      .mini-calc-btn { min-width: 48px; min-height: 48px; font-size: 1.5rem; }
+      .receipt-paper { font-family: monospace; }
+      .service-btn:hover,
+      .danger-btn:hover,
+      .pay-btn:hover,
+      .cash-btn:hover {
+        background: #f8d7da;
+        color: #a00;
+        border-color: #a00;
+      }
+      @media (max-width: 991px) {
+        .area-title { font-size: 1.2rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CASSA Button to open the modal -->
+    <div class="container my-5 text-center">
+      <button class="btn btn-lg btn-danger px-5 py-3" data-bs-toggle="modal" data-bs-target="#cassaModal">
+        CASSA
+      </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="cassaModal" tabindex="-1" aria-labelledby="cassaModalLabel" aria-hidden="true">
+      <div class ="modal-dialog modal-xl modal-dialog-centered">
+        <div class ="modal-content">
+          <div class ="modal-body p-0">
+            <div class ="container-fluid py-3">
+              <div class ="row g-3">
+                <div class ="modal-header">
+                  <h1 class="modal-title fs-3" id="exampleModalLabel" style="cursor:pointer;">BEWA</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+              </div>
+              <div class="row g-3">
+                <!-- AREA 1: Receipt List (left) -->
+                <div class="col-lg-6 d-flex flex-column">
+                  <div class="area-border flex-grow-1 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="area-title fs-4">AREA 1</span>
+                    </div>
+                    <div class="flex-grow-1 d-flex flex-column">
+                      <ul id="selected-services" class="list-group mb-2 flex-grow-1"></ul>
+                      <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                        <span class="fw-bold text-danger">Totale :</span>
+                        <span id="total" class="fw-bold fs-5 text-danger">0.00€</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Right side: AREA 2, AREA 3, Payment -->
+                <div class="col-lg-6 d-flex flex-column">
+                  <div class="row g-3 flex-grow-1">
+                    <!-- AREA 2: Mini Calculator (top right) -->
+                    <div class="col-12">
+                      <div class="area-border h-100">
+                        <div class="d-flex justify-content-center mb-2">
+                          <span class="area-title fs-4">AREA 2</span>
+                        </div>
+                        <div class="row g-2 justify-content-center">
+                          <div class="col-12 col-md-8">
+                            <input type="text" id="calc-display" class="form-control text-end fs-4 mb-2" value="0" readonly>
+                            <div class="row g-2">
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="7">7</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="8">8</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="9">9</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="4">4</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="5">5</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="6">6</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="1">1</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="2">2</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="3">3</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value="0">0</button></div>
+                              <div class="col-4"><button class="btn btn-light w-100 mini-calc-btn calc-btn" data-value=".">.</button></div>
+                              <div class="col-4"><button class="btn btn-warning w-100 mini-calc-btn" id="calc-clear-btn">C</button></div>
+                              <div class="col-12 mt-2">
+                                <button class="btn btn-success w-100 mini-calc-btn" id="calc-equals-btn">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                    <path d="M13.485 1.929a.75.75 0 0 1 1.06 1.06l-8 8a.75.75 0 0 1-1.06 0l-4-4a.75.75 0 0 1 1.06-1.06l3.47 3.47 7.47-7.47z"/>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- AREA 3: Service Buttons (bottom right) -->
+                    <div class="col-12">
+                      <div class="area-border h-100">
+                        <div class="d-flex justify-content-center mb-3">
+                          <span class="area-title fs-4">AREA 3</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 justify-content-around mb-4">
+                          <button class="btn service-btn px-4 py-2" id="open-service-search">Servizi</button>
+                          <button class="btn service-btn px-4 py-2" id="open-product-search">Prodotti</button>
+                          <button class="btn service-btn px-4 py-2 service-custom" data-name="Servizio Personalizzato">Servizio<br><small>Personalizzato</small></button>
+                        </div>
+                        <div class="mb-2 position-relative" id="search-bar-container" style="display:none;">
+                          <input type="text" id="service-search" class="form-control" placeholder="Cerca..." autocomplete="off">
+                          <ul id="service-suggestions" class="list-group position-absolute w-100" style="z-index:10; display:none;"></ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Payment buttons (bottom right, outside area borders) -->
+                  <div class ="d-flex flex-column align-items-end gap-2 mt-2 flex-md-row justify-content-end">
+                    <button class ="btn pay-btn px-4 py-2 my-2" disabled>CARTA CREDITO</button>
+                    <button class ="btn cash-btn px-4 py-2 my-2" disabled>CONTANTI</button>
+                    <button class ="btn danger-btn px-4 py-2 my-2 me-md-2" id="reset-receipt-btn">ANNULLA</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal footer and receipt preview remain unchanged -->
+              <div class ="modal-footer flex-wrap">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-success" id="print-receipt-btn">Stampa Scontrino</button>
+              </div>
+              <!-- Receipt Preview (hidden by default) -->
+              <div id="receipt-preview" class="d-none d-flex justify-content-center align-items-center" style="min-height:100vh;">
+                <div class="receipt-paper p-3 bg-white text-dark shadow position-relative" style="width: 100%; max-width: 320px;">
+                  <button type="button" id="close-receipt-btn" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Chiudi"></button>
+                  <h4 class="text-center">Ricevuta</h4>
+                  <div id="non-fiscal-label" class="text-center fw-bold" style="display:none;">NON FISCALE</div>
+                  <div id="receipt-items"></div>
+                  <div class="text-end mt-2">
+                    <strong id="receipt-total">Totale: 0.00€</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportModalLabel">Report Analisi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body" id="report-content">
+          <!-- Report content will be injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
