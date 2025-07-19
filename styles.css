@@ -1,0 +1,57 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt-preview, #receipt-preview * {
+    visibility: visible;
+  }
+  #receipt-preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .service-price-input,
+  .service-name-input {
+    margin-bottom: 8px;
+  }
+  .save-edit-btn,
+  .remove-service-btn,
+  .discount-service-percent-btn,
+  .discount-service-euro-btn,
+  .markup-service-percent-btn,
+  .markup-service-euro-btn {
+    margin-top: 6px;
+    width: 100%;
+    display: block;
+  }
+  .list-group-item .btn {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .list-group-item > span {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+#service-suggestions .list-group-item {
+  border: 2px solid #d00;
+  color: #d00;
+  border-radius: 20px;
+  background: #fff;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+#service-suggestions .active,
+#service-suggestions .list-group-item.active {
+  background-color: #d00 !important;
+  color: #fff !important;
+  border-color: #d00 !important;
+}
