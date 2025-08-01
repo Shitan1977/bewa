@@ -463,18 +463,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const reportModal = document.getElementById('reportModal');
   const reportContent = document.getElementById('report-content');
 
-  if (calcClearBtn) {
-    calcClearBtn.addEventListener('click', function() {
+  ['click', 'touchstart'].forEach(evt => {
+    calcClearBtn.addEventListener(evt, function() {
       cClickCount++;
       if (cClickTimer) clearTimeout(cClickTimer);
-      cClickTimer = setTimeout(() => { cClickCount = 0; }, 500); // Reset after 1.5s
+      cClickTimer = setTimeout(() => { cClickCount = 0; }, 500);
 
       if (cClickCount === 3) {
         cClickCount = 0;
         showReportModal();
       }
     });
-  }
+  });
 
   function showReportModal() {
     let totalReceipts = 1;
